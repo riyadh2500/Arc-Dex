@@ -112,7 +112,7 @@ function TokenRow({
   onSelect: () => void
 }) {
   const { data: bal } = useBalance({
-    address: walletAddress,
+    address: walletAddress as `0x${string}` | undefined,
     token:   token.isNative ? undefined : (token.address as `0x${string}`),
     chainId: ARC_CHAIN_ID,
     query:   { enabled: !!walletAddress },

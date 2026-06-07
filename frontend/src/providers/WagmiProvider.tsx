@@ -121,7 +121,7 @@ export default function WagmiProvider({ children }: { children: React.ReactNode 
         defaultChain:    arcTestnet,
         supportedChains: [arcTestnet],
         embeddedWallets: {
-          createOnLogin: 'users-without-wallets',
+          ethereum: { createOnLogin: 'users-without-wallets' },
         },
       }}
     >

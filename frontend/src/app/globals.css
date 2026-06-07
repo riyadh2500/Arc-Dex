@@ -1,0 +1,134 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   ARC DEX — Design System
+   Arc Network: EVM L1, USDC as native gas, Chain ID 5042002
+   Builder: @riyadhisla58886 | https://x.com/riyadhisla58886
+───────────────────────────────────────────────────────────────────────────── */
+
+@layer base {
+  :root {
+    /* ── Core palette ─────────────────────────────────────────── */
+    --arc-bg:           #07090f;      /* near-black page background   */
+    --arc-surface:      #0f1117;      /* card / panel background      */
+    --arc-surface-2:    #161b26;      /* elevated surface             */
+    --arc-border:       rgba(255,255,255,0.08);
+    --arc-border-hover: rgba(255,255,255,0.16);
+
+    /* ── Arc brand blue ───────────────────────────────────────── */
+    --arc-blue-900:     #0c1a3d;
+    --arc-blue-800:     #102060;
+    --arc-blue-700:     #1a3a9c;
+    --arc-blue-600:     #2563eb;      /* primary action               */
+    --arc-blue-500:     #3b82f6;
+    --arc-blue-400:     #60a5fa;
+    --arc-blue-300:     #93c5fd;
+    --arc-blue-200:     #bfdbfe;
+
+    /* ── Accent / status ──────────────────────────────────────── */
+    --arc-green:        #22c55e;
+    --arc-amber:        #f59e0b;
+    --arc-red:          #ef4444;
+    --arc-purple:       #8b5cf6;
+    --arc-cyan:         #06b6d4;
+    --arc-pink:         #ec4899;
+
+    /* ── Category colors (ecosystem) ─────────────────────────── */
+    --cat-defi:         #3b82f6;      /* blue   */
+    --cat-infra:        #8b5cf6;      /* purple */
+    --cat-banking:      #22c55e;      /* green  */
+    --cat-wallets:      #f97316;      /* orange */
+    --cat-bridges:      #ec4899;      /* pink   */
+    --cat-devtools:     #eab308;      /* yellow */
+    --cat-payments:     #06b6d4;      /* cyan   */
+    --cat-custody:      #f43f5e;      /* rose   */
+
+    /* ── Text ─────────────────────────────────────────────────── */
+    --arc-text-primary:   #ffffff;
+    --arc-text-secondary: #a1a1aa;    /* zinc-400 */
+    --arc-text-muted:     #71717a;    /* zinc-500 */
+
+    /* ── Radius ───────────────────────────────────────────────── */
+    --radius: 0.75rem;
+  }
+}
+
+@layer base {
+  *, *::before, *::after { box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background-color: var(--arc-bg);
+    color: var(--arc-text-primary);
+    font-feature-settings: "rlig" 1, "calt" 1;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* Selection */
+  ::selection {
+    background: var(--arc-blue-600);
+    color: #fff;
+  }
+}
+
+/* ── Scrollbar ─────────────────────────────────────────────────────────────── */
+::-webkit-scrollbar        { width: 5px; height: 5px; }
+::-webkit-scrollbar-track  { background: transparent; }
+::-webkit-scrollbar-thumb  { background: #3b82f640; border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: #3b82f6; }
+
+/* ── Remove number input arrows ────────────────────────────────────────────── */
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+input[type="number"] { -moz-appearance: textfield; }
+
+/* ── Arc background gradient (applied to body) ─────────────────────────────── */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background:
+    radial-gradient(ellipse 80% 40% at 50% -10%, rgba(37,99,235,0.15) 0%, transparent 70%),
+    radial-gradient(ellipse 40% 30% at 80% 80%,  rgba(139,92,246,0.08) 0%, transparent 60%),
+    var(--arc-bg);
+  pointer-events: none;
+}
+
+/* ── Category badge utility classes ────────────────────────────────────────── */
+@layer components {
+  .badge-defi      { background: rgba(59,130,246,0.18);  color: #93c5fd; border: 1px solid rgba(59,130,246,0.3);  }
+  .badge-infra     { background: rgba(139,92,246,0.18);  color: #c4b5fd; border: 1px solid rgba(139,92,246,0.3); }
+  .badge-banking   { background: rgba(34,197,94,0.18);   color: #86efac; border: 1px solid rgba(34,197,94,0.3);  }
+  .badge-wallets   { background: rgba(249,115,22,0.18);  color: #fdba74; border: 1px solid rgba(249,115,22,0.3); }
+  .badge-bridges   { background: rgba(236,72,153,0.18);  color: #f9a8d4; border: 1px solid rgba(236,72,153,0.3);}
+  .badge-devtools  { background: rgba(234,179,8,0.18);   color: #fde047; border: 1px solid rgba(234,179,8,0.3);  }
+  .badge-payments  { background: rgba(6,182,212,0.18);   color: #67e8f9; border: 1px solid rgba(6,182,212,0.3);  }
+  .badge-custody   { background: rgba(244,63,94,0.18);   color: #fda4af; border: 1px solid rgba(244,63,94,0.3);  }
+
+  /* Arc card */
+  .arc-card {
+    background: var(--arc-surface);
+    border: 1px solid var(--arc-border);
+    border-radius: 1rem;
+  }
+  .arc-card:hover {
+    border-color: var(--arc-border-hover);
+  }
+
+  /* Arc button primary */
+  .arc-btn {
+    background: var(--arc-blue-600);
+    color: #fff;
+    font-weight: 600;
+    border-radius: 0.75rem;
+    padding: 0.5rem 1rem;
+    transition: background 0.15s;
+  }
+  .arc-btn:hover { background: var(--arc-blue-500); }
+  .arc-btn:active { background: var(--arc-blue-700); }
+}

@@ -112,6 +112,42 @@ function shortAddress(addr: string) {
   return `${addr.slice(0, 6)}…${addr.slice(-4)}`
 }
 
+// ── Mobile wallet deep links ──────────────────────────────────────────────────
+// On mobile browsers there are no injected wallets.
+// These deep links open the wallet app directly and load the dapp inside it.
+const SITE_URL = typeof window !== 'undefined' ? window.location.href : 'https://arc-rust-five.vercel.app'
+
+const MOBILE_WALLETS = [
+  {
+    name:     'MetaMask',
+    desc:     'Open in MetaMask mobile app',
+    icon:     '🦊',
+    bg:       '#f6851b22',
+    deeplink: `https://metamask.app.link/dapp/${typeof window !== 'undefined' ? window.location.host : 'arc-rust-five.vercel.app'}`,
+  },
+  {
+    name:     'Phantom',
+    desc:     'Open in Phantom mobile app',
+    icon:     '👻',
+    bg:       '#ab9ff222',
+    deeplink: `https://phantom.app/ul/browse/${encodeURIComponent(SITE_URL)}?ref=${encodeURIComponent(SITE_URL)}`,
+  },
+  {
+    name:     'Coinbase Wallet',
+    desc:     'Open in Coinbase Wallet app',
+    icon:     '🔵',
+    bg:       '#0052ff22',
+    deeplink: `https://go.cb-w.com/dapp?cb_url=${encodeURIComponent(SITE_URL)}`,
+  },
+  {
+    name:     'Trust Wallet',
+    desc:     'Open in Trust Wallet app',
+    icon:     '🛡️',
+    bg:       '#3375bb22',
+    deeplink: `https://link.trustwallet.com/open_url?coin_id=60&url=${encodeURIComponent(SITE_URL)}`,
+  },
+]
+
 // ── Wallet Picker Modal — TRULY CENTERED ─────────────────────────────────────
 
 function WalletPickerModal({ onClose }: { onClose: () => void }) {
@@ -186,6 +222,8 @@ function WalletPickerModal({ onClose }: { onClose: () => void }) {
 
         {/* ── Scrollable wallet list ── */}
         <div style={{ overflowY: 'auto', flex: 1, padding: '0 16px 8px' }}>
+
+          {/* Wagmi connectors (desktop injected wallets) */}
           {connectors.map(connector => {
             const loading = isPending && variables?.connector === connector
             return (
@@ -194,56 +232,65 @@ function WalletPickerModal({ onClose }: { onClose: () => void }) {
                 onClick={() => { connect({ connector, chainId: ARC_CHAIN_ID }); onClose() }}
                 disabled={isPending}
                 style={{
-                  display:        'flex',
-                  alignItems:     'center',
-                  gap:            '14px',
-                  width:          '100%',
-                  padding:        '14px 16px',
-                  marginBottom:   '8px',
-                  background:     'rgba(255,255,255,0.04)',
-                  border:         '1px solid rgba(255,255,255,0.08)',
-                  borderRadius:   '16px',
-                  cursor:         isPending ? 'not-allowed' : 'pointer',
-                  opacity:        isPending && !loading ? 0.5 : 1,
-                  transition:     'all 0.15s',
-                  textAlign:      'left',
+                  display: 'flex', alignItems: 'center', gap: '14px',
+                  width: '100%', padding: '14px 16px', marginBottom: '8px',
+                  background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)',
+                  borderRadius: '16px', cursor: isPending ? 'not-allowed' : 'pointer',
+                  opacity: isPending && !loading ? 0.5 : 1, transition: 'all 0.15s', textAlign: 'left',
                 }}
-                onMouseEnter={e => {
-                  if (!isPending) e.currentTarget.style.background = 'rgba(255,255,255,0.09)'
-                }}
-                onMouseLeave={e => {
-                  e.currentTarget.style.background = 'rgba(255,255,255,0.04)'
-                }}
+                onMouseEnter={e => { if (!isPending) e.currentTarget.style.background = 'rgba(255,255,255,0.09)' }}
+                onMouseLeave={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.04)' }}
               >
-                {/* Logo container */}
-                <div style={{
-                  width: '40px', height: '40px', borderRadius: '12px',
-                  background: 'rgba(255,255,255,0.08)',
-                  display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  flexShrink: 0, overflow: 'hidden',
-                }}>
+                <div style={{ width: '40px', height: '40px', borderRadius: '12px', background: 'rgba(255,255,255,0.08)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, overflow: 'hidden' }}>
                   <WalletLogo name={connector.name} />
                 </div>
-
-                <span style={{ flex: 1, color: '#fff', fontSize: '15px', fontWeight: 600 }}>
-                  {connector.name}
-                </span>
-
-                {loading ? (
-                  <svg style={{ animation: 'spin 1s linear infinite', color: '#60a5fa' }}
-                       width="18" height="18" fill="none" viewBox="0 0 24 24">
-                    <style>{`@keyframes spin{to{transform:rotate(360deg)}}`}</style>
-                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" opacity="0.25"/>
-                    <path fill="currentColor" d="M4 12a8 8 0 018-8v8z" opacity="0.75"/>
-                  </svg>
-                ) : (
-                  <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="#52525b" strokeWidth={2}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5"/>
-                  </svg>
-                )}
+                <span style={{ flex: 1, color: '#fff', fontSize: '15px', fontWeight: 600 }}>{connector.name}</span>
+                {loading
+                  ? <svg style={{ animation: 'spin 1s linear infinite', color: '#60a5fa' }} width="18" height="18" fill="none" viewBox="0 0 24 24"><style>{`@keyframes spin{to{transform:rotate(360deg)}}`}</style><circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" opacity="0.25"/><path fill="currentColor" d="M4 12a8 8 0 018-8v8z" opacity="0.75"/></svg>
+                  : <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="#52525b" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5"/></svg>
+                }
               </button>
             )
           })}
+
+          {/* ── Mobile fallback — always show these on mobile when no injected wallets ── */}
+          {connectors.length === 0 && (
+            <div>
+              <p style={{ color: '#71717a', fontSize: '11px', textAlign: 'center', margin: '0 0 12px', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                Open in wallet app
+              </p>
+              {MOBILE_WALLETS.map(w => (
+                <a
+                  key={w.name}
+                  href={w.deeplink}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={{
+                    display: 'flex', alignItems: 'center', gap: '14px',
+                    width: '100%', padding: '14px 16px', marginBottom: '8px',
+                    background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)',
+                    borderRadius: '16px', cursor: 'pointer', textDecoration: 'none', transition: 'all 0.15s',
+                  }}
+                >
+                  <div style={{ width: '40px', height: '40px', borderRadius: '12px', background: w.bg, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, fontSize: '22px' }}>
+                    {w.icon}
+                  </div>
+                  <div style={{ flex: 1 }}>
+                    <p style={{ color: '#fff', fontSize: '15px', fontWeight: 600, margin: 0 }}>{w.name}</p>
+                    <p style={{ color: '#71717a', fontSize: '12px', margin: '2px 0 0' }}>{w.desc}</p>
+                  </div>
+                  <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="#52525b" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5"/>
+                  </svg>
+                </a>
+              ))}
+              <div style={{ marginTop: '8px', padding: '12px', background: 'rgba(59,130,246,0.08)', borderRadius: '12px', border: '1px solid rgba(59,130,246,0.2)' }}>
+                <p style={{ color: '#93c5fd', fontSize: '12px', margin: 0, textAlign: 'center', lineHeight: '1.5' }}>
+                  Open this page inside your wallet's built-in browser, or use WalletConnect to scan a QR code on desktop.
+                </p>
+              </div>
+            </div>
+          )}
         </div>
 
         {/* ── Footer ── */}

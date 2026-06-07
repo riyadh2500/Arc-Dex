@@ -48,14 +48,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 color: '#fff',
                 fontSize: '13px',
               },
-              // Don't auto-show errors from background lib noise
-              error: {
-                style: {
-                  background: '#1a0a0a',
-                  border: '1px solid rgba(239,68,68,0.3)',
-                  color: '#fca5a5',
-                },
-              },
             }}
           />
         </WagmiProvider>

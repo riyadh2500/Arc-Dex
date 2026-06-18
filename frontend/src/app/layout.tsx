@@ -12,6 +12,7 @@ import './globals.css'
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
+  metadataBase: new URL('https://arc-dex.vercel.app'),
   title:       'ARC DEX — Stablecoin-Native Exchange on Arc Network',
   description: 'ARC DEX is a decentralised exchange built on Arc Network — EVM-compatible L1 with USDC as native gas, instant finality, and 100+ ecosystem partners.',
   keywords:    ['ARC DEX', 'Arc Network', 'USDC', 'DEX', 'DeFi', 'swap', 'liquidity', 'stablecoin'],
